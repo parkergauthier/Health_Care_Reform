@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+<<<<<<< HEAD
+=======
+data/.DS_Store
+.DS_Store
+>>>>>>> f98c949db7a709c8440a39d3915abc637db2f473
