@@ -21,6 +21,10 @@ The results, published in the American College of Physicians' Annals of Internal
 
 # Methodology
 
+Let $Y_{it}$ be the mortality rate for state $i$ at time period $t$ and let $D_i \in (0,1)$ denote the binary treatment indicator of state $i$. Our goal is to estimate the average treatment effect of introducing Romneycare on mortality rates in Massachusetts, or: 
+$$ATT_t = E[Y_{it}^1 - Y_{it}^0 | D_i = 1] = E[Y_{it}^1|D_i = 1] - E[Y_{it}^0|D_i = 1]$$
+In words, the ATT can be calculated as the estimate of the difference in outcomes for the treated units in the world where they were treated versus the world where they were not treated. The key crux to this calculation lies in our ability to measure $Y_{it}^0|D_i=1$, or how the treated units would have performed had they not been treated. This is where the idea of Synthetic Control comes into play. The Synthetic Control estimator interpolates this unknown by using a weighted average of the untreated units to create a synthetic untreated unit with pre-treatment characteristics similar to those of the treated unit. In our analysis, we will use cross-sectional time-series mortality data from counties outside of Massachusetts that did not have affordable care laws that most closely match the demographic makeup of Massachusetts. Using SC, an optimized weighted average of these selected counties' mortality rates will serve as our untreated unit to compare to Massachusetts both before and after Romneycare was enacted. 
+
 # Analysis
 
 # Conclusion
