@@ -17,7 +17,15 @@ CDC_Corrected = CDC_20to64_State %>%
   mutate(
     X..of.Total.Deaths = substr(X..of.Total.Deaths,1,nchar(X..of.Total.Deaths)-1)
   ) %>%
-  mutate(X..of.Total.Deaths = as.numeric(X..of.Total.Deaths))
- 
-  
+  mutate(X..of.Total.Deaths = as.numeric(X..of.Total.Deaths)) %>%
+  filter(Year >= 2000)
+
+## FEATURES FOR SC 
+# state level unemployment 
+unemp = read.csv("data/state-unemployment.csv") %>% 
+  pivot_longer(cols = X2000:X2016) %>%
+  mutate(Year = substring(name, 2)) %>%
+  select(Fips, Area, Year, value)
+colnames(unemp) = c("State_Fips", "State", "Year", "Unemp_Rate")
+
 
