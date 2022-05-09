@@ -16,3 +16,11 @@ output: pdf_document
 In this report, we will attempt to replicate Sommers, Long and Baicker's 2014 study of changes in Massachusetts' mortality after the introduction of Romneycare and the Massachusetts Health Care Reform. In their analysis, the authors utilized a natural experiment by comparing population-level Massachusetts mortality obtained from the Center for Disease Control (CDC) following the implementation of Romneycare to counties covering approximately 25% of the United States. The counties included were selected to best match the racial makeup, gender balance, age cohorts, and baseline death rates found in Massachusetts. Using a propensity score framework, the authors 
 
 The results, published in the American College of Physicians' Annals of Internal Medicine, found an overall annual decrease of 320 deaths per year in Massachusetts as compared to counties outside the state. 
+
+# Data
+
+# Methodology
+
+# Analysis
+
+# Conclusion
