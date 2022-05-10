@@ -28,6 +28,9 @@ unemp = read.csv("data/state-unemployment.csv") %>%
   select(Fips, Area, Year, value)
 colnames(unemp) = c("State_Fips", "State", "Year", "Unemp_Rate")
 
+# state age-sex data 2000, 2010
+state_age_2010 = read.csv("data/2010-age.csv") %>% data.frame
+state_sex_2010 = read.csv("data/2010-sex.csv") %>% data.frame
 
 df = CDC_Corrected %>%
   filter(Year==2000 & Race=='White')
