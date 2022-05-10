@@ -119,7 +119,10 @@ c3 = merge(c2, state_hhinc)
 c4 = merge(c3, state_poverty)
 c5 = merge(c4, state_uninsured)
 
+# state mortality rates
+mort_rate = read.csv("data/state-mortality-2000-2010.csv")
 
+# merged data for synthetic control
+sc_data = merge(c5, mort_rate) %>% select(-Deaths, -Population) %>% select(State, Year, crudemort_rate, Mort_rate, everything())
+write.csv(sc_data, file = "data/sc_data.csv")
 
-df = CDC_Corrected %>%
-  filter(Year==2000 & Race=='White')
