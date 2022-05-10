@@ -87,6 +87,30 @@ state_race_clean = state_race %>% pivot_longer("2000":"2010") %>%
     Race_Multi = Race_Multi / Population * 100,) %>% 
   select(-Population)
 
+# state hispanic population
+state_hisp = read.csv("data/state-hisp-2000-2010.csv") %>% 
+  pivot_longer(X2000:X2010) %>%
+  mutate(name = recode(name,
+                       X2000 = "2000",
+                       X2001 = "2001",
+                       X2002 = "2002",
+                       X2003 = "2003",
+                       X2004 = "2004",
+                       X2005 = "2005",
+                       X2006 = "2006",
+                       X2007 = "2007",
+                       X2008 = "2008",
+                       X2009 = "2009",
+                       X2010 = "2010",
+  )) 
+colnames(state_hisp) = c("State", "Year", "Hisp")
+state_hisp = state_hisp %>%
+  merge(state_pop) %>%
+  mutate(
+    Hisp = Hisp / Population * 100) %>% 
+  select(-Population)
+
+# state median household income
 state_hhinc = read.csv("data/state-hhinc-2000-2010.csv") %>%
   data.frame %>%
   filter(State != "United States") %>%
@@ -118,11 +142,12 @@ c2 = merge(c1, state_race_clean)
 c3 = merge(c2, state_hhinc)
 c4 = merge(c3, state_poverty)
 c5 = merge(c4, state_uninsured)
+c6 = merge(c5, state_hisp)
 
 # state mortality rates
 mort_rate = read.csv("data/state-mortality-2000-2010.csv")
 
 # merged data for synthetic control
-sc_data = merge(c5, mort_rate) %>% select(-Deaths, -Population) %>% select(State, Year, crudemort_rate, Mort_rate, everything())
+sc_data = merge(c6, mort_rate) %>% select(-Deaths, -Population) %>% select(State, Year, crudemort_rate, Mort_rate, everything())
 write.csv(sc_data, file = "data/sc_data.csv")
 

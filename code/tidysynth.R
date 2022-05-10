@@ -21,6 +21,7 @@ sc_out = sc_tbl %>%
                      Age_55to64 = mean(Age_55to64, na.rm = T),
                      Male_pct = mean(Male_pct, na.rm = T),
                      Female_pct = mean(Female_pct, na.rm = T),
+                     Hisp = mean(Hisp, na.rm = T),
                      Race_White = mean(Race_White, na.rm = T),
                      Race_Black = mean(Race_Black, na.rm = T),
                      Race_AmInd = mean(Race_AmInd, na.rm = T),
