@@ -41,5 +41,17 @@ sc_out = sc_tbl %>%
   generate_control()
 
 # plot results 
-sc_plot = sc_out %>% plot_trends() %>% ggtitle("Massachusetts Mortality Rate (under 65 years) vs. Synthetic Control")
+sc_plot = sc_out %>% plot_trends() 
+
+# look at predictor weights
+sc_pred_weights = sc_out$.predictor_weights %>% data.frame
+
+# what states make up the synthetic control? 
+sc_state_weights = sc_out$.unit_weights
+
+# look at sc vs. mass mortality rates
+sc_comp = sc_out$.synthetic_control %>% data.frame
+
+
+
 
