@@ -84,8 +84,9 @@ state_race_clean = state_race %>% pivot_longer("2000":"2010") %>%
     Race_AmInd = Race_AmInd / Population * 100,
     Race_Asian = Race_Asian / Population * 100,
     Race_PacIsl = Race_PacIsl / Population * 100,
-    Race_Multi = Race_Multi / Population * 100,) %>% 
-  select(-Population)
+    Race_Multi = Race_Multi / Population * 100,
+    Race_Other = Race_AmInd + Race_Asian + Race_PacIsl + Race_Multi) %>% 
+  select(State, Year, Race_White, Race_Black, Race_Other)
 
 # state hispanic population
 state_hisp = read.csv("data/state-hisp-2000-2010.csv") %>% 

@@ -24,10 +24,7 @@ sc_out = sc_tbl %>%
                      Hisp = mean(Hisp, na.rm = T),
                      Race_White = mean(Race_White, na.rm = T),
                      Race_Black = mean(Race_Black, na.rm = T),
-                     Race_AmInd = mean(Race_AmInd, na.rm = T),
-                     Race_Asian = mean(Race_Asian, na.rm = T),
-                     Race_PacIsl = mean(Race_PacIsl, na.rm = T),
-                     Race_Multi = mean(Race_Multi, na.rm = T),
+                     Race_Other = mean(Race_Other, na.rm = T),
                      HH_Income = mean(HH_Income, na.rm = T),
                      Poverty_rate = mean(Poverty_rate, na.rm = T),
                      Uninsured_pct = mean(Uninsured_pct, na.rm = T)) %>%
