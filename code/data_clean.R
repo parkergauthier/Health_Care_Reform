@@ -31,13 +31,27 @@ colnames(unemp) = c("State", "Year", "Unemp_Rate")
 # state age-sex data 2000 - 2010 (Census intercensal estimates)
 state_agesex_2010 = read.csv("data/state-agesex-2000-2010.csv") %>% data.frame
 
-# state demos (age, sex, race) 
-state_demos = read.csv("data/state-demos-2000-2010.csv") %>% 
-  data.frame %>% 
-  filter(State != "United States") %>%
-  select(-N, -CENSUS2010POP) %>%
-  select(State, RACE, everything()) %>%
-colnames(state_demos) = c("State","Race", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010")
+# state demos racee 2000 - 2010 (Census intercensal)
+state_race_2010 = read.csv("data/state-race-2000-2010.csv") %>% 
+  data.frame %>%
+  filter(NAME != "United States" & RACE != 0) %>% 
+  select(-STATE)
+colnames(state_race_2010) = c("State", "Race", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010")
+
+state_race_2010_long = state_race_2010 %>% pivot_longer("2000":"2010") %>%
+  pivot_wider(names_from = Race, names_prefix = "Race_", values_from = "value") %>%
+  rename(
+    Year = name,
+    Race_White = Race_1,
+    Race_Black = Race_2, 
+    Race_AmInd = Race_3,
+    Race_Asian = Race_4,
+    Race_PacIsl = Race_5,
+    Race_Multi = Race_6
+  )
+
+c1 = merge(unemp, state_agesex_2010)
+c2 = merge(c1, state_race_2010_long)
 
 
 df = CDC_Corrected %>%
