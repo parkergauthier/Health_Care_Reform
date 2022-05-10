@@ -4,6 +4,12 @@ author: "Elle Boodsakorn, Parker Gauthier, Amal Kadri, Alice Kemp and Austin Lon
 date: 'University of Texas at Austin - ECO395M - Spring 2022'
 output: pdf_document
 ---
+```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+options(scipen = 999)
+if (!("librarian" %in% rownames(utils::installed.packages()))) {
+  utils::install.packages("librarian")}
+librarian::shelf(tidyverse, haven, kableExtra, modelr, rsample, stargazer, tidysynth)
+```
 
 # Abstract
 
@@ -24,8 +30,18 @@ The results, published in the American College of Physicians' Annals of Internal
 
 Let $Y_{it}$ be the mortality rate for state $i$ at time period $t$ and let $D_i \in (0,1)$ denote the binary treatment indicator of state $i$. Our goal is to estimate the average treatment effect of introducing Romneycare on mortality rates in Massachusetts, or: 
 $$ATT_t = E[Y_{it}^1 - Y_{it}^0 | D_i = 1] = E[Y_{it}^1|D_i = 1] - E[Y_{it}^0|D_i = 1]$$
-In words, the ATT can be calculated as the estimate of the difference in outcomes for the treated units in the world where they were treated versus the world where they were not treated. The key crux to this calculation lies in our ability to measure $Y_{it}^0|D_i=1$, or how the treated units would have performed had they not been treated. This is where the idea of Synthetic Control comes into play. The Synthetic Control estimator interpolates this unknown by using a weighted average of the untreated units to create a synthetic untreated unit with pre-treatment characteristics similar to those of the treated unit. In our analysis, we will use cross-sectional time-series mortality data from counties outside of Massachusetts that did not have affordable care laws that most closely match the demographic makeup of Massachusetts. Using SC, an optimized weighted average of these selected counties' mortality rates will serve as our untreated unit to compare to Massachusetts' mortality before and after Romneycare was enacted. In comparison to Sommers et al's approach which uses propensity score matching, synthetic control uses optimization of individual weights, which avoids the small sample bias that propensity score matching is susceptible to when only one treatment unit is used. 
+In words, the ATT can be calculated as the estimate of the difference in outcomes for the treated units in the world where they were treated versus the world where they were not treated. The key crux to this calculation lies in our ability to measure $Y_{it}^0|D_i=1$, or how the treated units would have performed had they not been treated. This is where the idea of Synthetic Control comes into play. The Synthetic Control estimator interpolates this unknown by using a weighted average of the untreated units to create a synthetic untreated unit with pre-treatment characteristics similar to those of the treated unit. In our analysis, we will use cross-sectional time-series mortality data from counties outside of Massachusetts that did not have affordable care laws that most closely match the demographic makeup of Massachusetts. Using SC, an optimized weighted average of these selected counties' mortality rates will serve as our untreated unit to compare to Massachusetts' mortality before and after Romneycare was enacted. In comparison to Sommers et al's approach which uses propensity score matching, synthetic control uses optimization of individual weights, which avoids the small sample bias that propensity score matching is susceptible to when only one treatment unit is used, the state of Massachusetts in our case. 
 
 # Analysis
+
+
+```{r sc, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+load(file = "r_objects/sc_out.Rdata")
+sc_out = sc_out$.unit_weights %>% data.frame
+state_weights = sc_out[,1:2]
+colnames(state_weights) = c("State", "Weight")
+knitr::kable(list(state_weights[1:25,], state_weights[26:50,]),format = 'latex', digits = 5, booktabs = TRUE, caption = "Synthetic Control: Weights of sampled states") %>% kable_classic(full_width = T, html_font = "Cambria") %>% kable_styling(latex_options = 'hold_position')
+```
+
 
 # Conclusion

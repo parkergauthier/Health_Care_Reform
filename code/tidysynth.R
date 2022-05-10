@@ -41,6 +41,8 @@ sc_out = sc_tbl %>%
   # Generate the synthetic control
   generate_control()
 
+save(sc_out, file = "r_objects/sc_out.Rdata")
+
 # plot results 
 sc_plot = sc_out %>% plot_trends() 
 
@@ -48,7 +50,7 @@ sc_plot = sc_out %>% plot_trends()
 sc_pred_weights = sc_out$.predictor_weights %>% data.frame
 
 # what states make up the synthetic control? 
-sc_state_weights = sc_out$.unit_weights
+sc_state_weights = sc_out$.unit_weights %>% data.frame
 
 # look at sc vs. mass mortality rates
 sc_comp = sc_out$.synthetic_control %>% data.frame
