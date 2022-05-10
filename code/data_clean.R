@@ -25,12 +25,20 @@ CDC_Corrected = CDC_20to64_State %>%
 unemp = read.csv("data/state-unemployment.csv") %>% 
   pivot_longer(cols = X2000:X2016) %>%
   mutate(Year = substring(name, 2)) %>%
-  select(Fips, Area, Year, value)
-colnames(unemp) = c("State_Fips", "State", "Year", "Unemp_Rate")
+  select(Area, Year, value)
+colnames(unemp) = c("State", "Year", "Unemp_Rate")
 
-# state age-sex data 2000, 2010
-state_age_2010 = read.csv("data/2010-age.csv") %>% data.frame
-state_sex_2010 = read.csv("data/2010-sex.csv") %>% data.frame
+# state age-sex data 2000 - 2010 (Census intercensal estimates)
+state_agesex_2010 = read.csv("data/state-agesex-2000-2010.csv") %>% data.frame
+
+# state demos (age, sex, race) 
+state_demos = read.csv("data/state-demos-2000-2010.csv") %>% 
+  data.frame %>% 
+  filter(State != "United States") %>%
+  select(-N, -CENSUS2010POP) %>%
+  select(State, RACE, everything()) %>%
+colnames(state_demos) = c("State","Race", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010")
+
 
 df = CDC_Corrected %>%
   filter(Year==2000 & Race=='White')
