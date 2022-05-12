@@ -34,14 +34,48 @@ In words, the ATT can be calculated as the estimate of the difference in outcome
 
 # Analysis
 
+There were some notable features that stood our when running our synthetic control model.  As displayed in Table 1, the model gave higher weights to states such as Rhode Island, Maryland and Connecticut.  These states were determined to have the most similar characteristics to Massachusetts, perhaps stemming from their geographical proximity to each other.  Using these weights, our synthetic control model predicted higher mortality rates post 2005 as shown in Figure 1. This has some interesting implications for our model.  Our event of interest takes place in 2006, a year after this hike in mortality rates.  It would appear that Massachusetts is not following the same trends as states deemed most similar for this year.  Figure 1 displays this more explicitly, showing how these states kink upwards from 2004 to 2005 but Massachusetts remains on a downward trend.  Despite this, mortality rates in Massachusetts appear to be declining at a greater rate than our control in 2006.  Furthermore, it is declining at a greater rate than the previous year as highlighted in Figure 2.
 
-```{r sc, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+```{r table1, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+#create a table of weights descending
+#load
 load(file = "r_objects/sc_out.Rdata")
+#clean
 sc_out = sc_out$.unit_weights %>% data.frame
 state_weights = sc_out[,1:2]
 colnames(state_weights) = c("State", "Weight")
-knitr::kable(list(state_weights[1:25,], state_weights[26:50,]),format = 'latex', digits = 5, booktabs = TRUE, caption = "Synthetic Control: Weights of sampled states") %>% kable_classic(full_width = T, html_font = "Cambria") %>% kable_styling(latex_options = 'hold_position')
+state_weights = state_weights %>% arrange(desc(Weight)) %>% head(10)
+#knit
+knitr::kable(state_weights, format = "latex" , digits = 5, booktabs = TRUE, caption = "Synthetic Control: Weights of sampled states") %>% kable_classic(full_width = T, html_font = "Cambria") %>% kable_styling(latex_options = 'hold_position')
 ```
 
+```{r figure1, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+#load sc data
+load(file = "r_objects/sc_out.Rdata")
+#plot data
+sc_out %>% plot_trends() +
+  labs(title = "Figure 1 - Time Series of the Sythetic and Observed Mortality Rate", y = "Mortality Rate")
+```
+
+
+
+```{r figure2, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+sc_tbl %>%  
+  filter(State == "Massachusetts" | State == "Rhode Island" | State == "Maryland" | State == "Connecticut" | State == "District of Columbia",Year == 2003 | Year == 2004 | Year == 2005) %>% 
+  ggplot(aes(y = Mort_rate, x = Year, color = factor(State))) +
+  geom_line(aes(size = factor(State))) + 
+  scale_size_manual(values = c(.5,.5,.5,2,.5))+
+  labs(y = "Mortality Rate", title = "Figure 2 - Mortality Rate Trends for Heavily Weighted States (2003-2005)", color = "State", size = "State")
+  
+
+```
+
+```{r figure3, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+#load sc data
+load(file = "r_objects/sc_out.Rdata")
+#plot data
+sc_out %>% plot_trends(time_window = 2005:2007) +
+  labs(title = "Figure 3 - Sythetic and Observed Mortality Rate at Event", y = "Mortality Rate")
+```
 
 # Conclusion
