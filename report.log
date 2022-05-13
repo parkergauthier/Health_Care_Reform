@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12) (preloaded format=xelatex 2022.5.13)  13 MAY 2022 05:04
+This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12) (preloaded format=xelatex 2022.5.13)  13 MAY 2022 10:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -495,3 +495,5 @@ Here is how much of TeX's memory you used:
  86i,0n,95p,513b,267s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 No pages of output.
+
+! xelatex: major issue: So far, you have not checked for MiKTeX updates.

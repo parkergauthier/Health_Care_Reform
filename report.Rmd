@@ -42,21 +42,40 @@ The results, published in the American College of Physicians' Annals of Internal
   We present some tables of summary statistics below:
 
 
-\begin{table}[H]
+```{r, results="asis",echo=FALSE,message=FALSE}
+df_sc <- read_csv(here("data", "sc_data.csv"),
+                  show_col_types = F) %>% 
+  select(Mort_rate, Unemp_Rate,Poverty_rate,Uninsured_pct)
 
-\caption{\label{tab:tab:replicatetable2a}Main Variables Summary}
-\centering
-\begin{tabular}[t]{lrrr}
-\toprule
-Variable & N & Mean & Standard Deviation\\
-\midrule
-Mort Rate & 561 & 0.847 & 0.125\\
-Unemp Rate & 561 & 5.543 & 1.979\\
-Poverty Rate & 561 & 12.207 & 3.270\\
-Uninsured Pct & 561 & 15.086 & 4.334\\
-\bottomrule
-\end{tabular}
-\end{table}
+ns <- df_sc %>% summarise(across(everything(), ~sum(!is.na(.x))))
+means <- df_sc %>% summarise(across(everything(), ~mean(.x, na.rm=T))) %>% round(3)
+sds <- df_sc %>% summarise(across(everything(), ~sd(.x, na.rm=T))) %>% round(3)
+
+stats_sc <- list(ns, means, sds) %>% 
+  do.call("rbind", .) %>% 
+  t() %>%
+  as.data.frame %>% 
+  rownames_to_column()
+
+colnames(stats_sc) <- c("Variable",
+                        "N",
+                        "Mean", 
+                        "Standard Deviation")
+
+panel_sc <- stats_sc
+
+panel_sc %>%
+  mutate(Variable = str_replace_all(Variable, "_", " "),
+         Variable = str_to_title(Variable)) %>% 
+  kbl(
+    caption = "Main Variables Summary",
+    booktabs = T,
+    format = 'latex',
+    label = 'tab:replicatetable2a'
+  ) %>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
 
 
 This table shows that between the years of our study, the mortality rate had a mean of 0.847%. Average unemployment was also about 5.5% among states in our sample. Finally, the mean poverty and uninsured rates were about 15% and 12%, respectively.
