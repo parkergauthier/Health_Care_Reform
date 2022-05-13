@@ -10,7 +10,6 @@ header-includes:
 - \usepackage{longtable}
 - \usepackage{array}
 - \usepackage{tabu}
-
 ---
 ```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
 options(scipen = 999)
