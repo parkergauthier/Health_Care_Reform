@@ -3,6 +3,7 @@ library(tidysynth)
 sc_data = read.csv("data/sc_data.csv") %>% select(-X, -crudemort_rate)
 sc_data[,2:19] = sapply(sc_data[,2:19], as.numeric)
 sc_tbl = sc_data %>% as_tibble()
+save(sc_tbl, file = 'r_objects/sc_table.Rdata')
 
 sc_out = sc_tbl %>%
   # initial the synthetic control object

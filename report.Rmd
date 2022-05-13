@@ -2,7 +2,15 @@
 title: "The Causal Impact of Romneycare on Massachusetts' Mortality Rate using Synthetic Control"
 author: "Elle Boodsakorn, Parker Gauthier, Amal Kadri, Alice Kemp and Austin Longoria"
 date: 'University of Texas at Austin - ECO395M - Spring 2022'
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{tabu}
+
 ---
 ```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
 options(scipen = 999)
@@ -10,13 +18,14 @@ if (!("librarian" %in% rownames(utils::installed.packages()))) {
   utils::install.packages("librarian")}
 librarian::shelf(tidyverse, haven, kableExtra, modelr, rsample, stargazer, tidysynth)
 ```
-
+\newline
+\newline
 # Abstract
 We utilize the panel dataset from Center for Disease Control (CDC) to investigate the effect of Romneycare on mortality rates. Our analysis uses Synthetic Control to find the optimal weights for each state that closely resembles Massachusetts. We present these weights as well as our model prediction of lower mortality rates post 2006, when Romneycare was passed. Although Massachusetts did not trend similarly to other states chosen by Synthetic Control prior to the passage of Romneycare in 2006, our model predicts a decline in mortality rate of .867 which matches the actual outcome almost exactly. The results of our Synthetic Control estimates confirm the conclusion of Sommers, Long, and Baicker.
 \newpage
 
 # 1. Introduction
-  Access to healthcare through affordable health insurance remains one of the most divisive policy debates in the United States, with critics of a privatized system arguing in favor of a widespread, easily accessible option targeted at low income households to increase the quality and quantity of health care. However, some supporters of private insurance argue against such a system, stating that insurance provided by the federal government unfairly burdens taxpayers, many of whom opt for private coverage through their employers. Before the groundbreaking introduction of the Affordable Care Act in 2008, better known as "Obamacare", the state of Massachusetts passed its own state-provided health insurance program signed into law by Senator Mitt Romney in 2006. The program, dubbed "Romneycare" and the first of its kind in the U.S., provided free and heavily subsidized health insurance to the lowest income resident of the state, and mandated that nearly all residents obtain a minimal level of coverage. To aid in the provision of coverage to higher earners, the law also required every employer in the state with over ten full-time employees to provide a health insurance plan to workers. Before the program was heavily rolled back in favor of Obamacare in 2012, over 97% of Massachusetts residents had health insurance coverage (**cite - brookings**). Many studies have investigated the effects of Romneycare and Obamacare on statistics such as health coverage, insurance utilization, and health care pricing, however, few have attempted to isolate the causal effect of mandated affordable health coverage on mortality rates. One of the reasons why this effect can be difficult to identify is due to the distribution of health care in the U.S. - as insurance is not randomly assigned to individuals but normally obtained through employers, low income individuals tend to have minimal coverage, if at all and sub-optimal quality of care. As a result, worse health outcomes tend to be correlated with individuals on the lower end of the socioeconomic spectrum, making any causal analysis particularly complex. However, using causal inference techniques such as Synthetic Control, we will be able to isolate the direct effect of Romneycare on mortality outcomes. Overall, we theorize that the nearly maximized population of residents with mandated health insurance coverage required by Romneycare will decrease mortality due to more individuals seeking both preventative and emergency care without the burden of uninsured pricing.
+  Access to healthcare through affordable health insurance remains one of the most divisive policy debates in the United States, with critics of a privatized system arguing in favor of a widespread, easily accessible option targeted at low income households to increase the quality and quantity of health care. However, some supporters of private insurance argue against such a system, stating that insurance provided by the federal government unfairly burdens taxpayers, many of whom opt for private coverage through their employers. Before the groundbreaking introduction of the Affordable Care Act in 2008, better known as "Obamacare", the state of Massachusetts passed its own state-provided health insurance program signed into law by Senator Mitt Romney in 2006. The program, dubbed "Romneycare" and the first of its kind in the U.S., provided free and heavily subsidized health insurance to the lowest income resident of the state, and mandated that nearly all residents obtain a minimal level of coverage. To aid in the provision of coverage to higher earners, the law also required every employer in the state with over ten full-time employees to provide a health insurance plan to workers. Before the program was heavily rolled back in favor of Obamacare in 2012, over 97% of Massachusetts residents had health insurance coverage. Many studies have investigated the effects of Romneycare and Obamacare on statistics such as health coverage, insurance utilization, and health care pricing, however, few have attempted to isolate the causal effect of mandated affordable health coverage on mortality rates. One of the reasons why this effect can be difficult to identify is due to the distribution of health care in the U.S. - as insurance is not randomly assigned to individuals but normally obtained through employers, low income individuals tend to have minimal coverage, if at all and sub-optimal quality of care. As a result, worse health outcomes tend to be correlated with individuals on the lower end of the socioeconomic spectrum, making any causal analysis particularly complex. However, using causal inference techniques such as Synthetic Control, we will be able to isolate the direct effect of Romneycare on mortality outcomes. Overall, we theorize that the nearly maximized population of residents with mandated health insurance coverage required by Romneycare will decrease mortality due to more individuals seeking both preventative and emergency care without the burden of uninsured pricing.
   
   The paper is organized as follows. In Sect. 2, we provide a background understanding of the original work of Sommers, Long and Baicker's, and their research design of implementing propensity score framework. Descriptions of state-level data are presented in Sect. 3. Empirical model and estimation, as well as Synthetic Control are performed in Sect. 4. In Sect. 5, we present the results of our analysis and report overall ATTs. Finally, Sect. 6 concludes.
   
@@ -62,13 +71,13 @@ sc_out %>% plot_trends() +
 ```
 
 ```{r figure2, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+load(file = "r_objects/sc_table.Rdata")
 sc_tbl %>%  
   filter(State == "Massachusetts" | State == "Rhode Island" | State == "Maryland" | State == "Connecticut" | State == "District of Columbia",Year == 2003 | Year == 2004 | Year == 2005) %>% 
   ggplot(aes(y = Mort_rate, x = Year, color = factor(State))) +
   geom_line(aes(size = factor(State))) + 
   scale_size_manual(values = c(.5,.5,.5,2,.5))+
   labs(y = "Mortality Rate", title = "Figure 2 - Mortality Rate Trends for Heavily Weighted States (2003-2005)", color = "State", size = "State")
-  
 
 ```
 
@@ -82,18 +91,18 @@ sc_out %>% plot_trends(time_window = 2005:2007) +
 
 
 ```{r table2, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+load(file = "r_objects/sc_out.Rdata")
 balance_df = sc_out %>% grab_predictors() %>% as.data.frame()
 
 balance_df %>% 
   filter(variable == "mort_rate")
 
 sc_out %>% grab_outcome() %>% as.data.frame()
-
 ```
 
-```{r table2, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+```{r table2g, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+load(file = "r_objects/sc_out.Rdata")
 sc_out %>% plot_differences()
-
 ```
 
 # 6. Conclusion
