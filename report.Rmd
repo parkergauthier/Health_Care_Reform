@@ -93,8 +93,8 @@ sc_out %>% plot_trends(time_window = 2005:2007) +
 
 
 ```{r table2g, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-load(file = "r_objects/sc_out.Rdata")
-sc_out %>% plot_differences()
+# load(file = "r_objects/sc_out.Rdata")
+# sc_out %>% plot_differences()
 ```
 
 # 6. Conclusion
