@@ -10,6 +10,8 @@ header-includes:
 - \usepackage{longtable}
 - \usepackage{array}
 - \usepackage{tabu}
+- \usepackage{float}
+
 ---
 ```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
 options(scipen = 999)
@@ -17,8 +19,7 @@ if (!("librarian" %in% rownames(utils::installed.packages()))) {
   utils::install.packages("librarian")}
 librarian::shelf(tidyverse, haven, kableExtra, modelr, rsample, stargazer, tidysynth)
 ```
-\newline
-\newline
+
 # Abstract
 We leverage the panel dataset from Center for Disease Control (CDC) to investigate the effect of Romneycare on mortality rates. Our analysis uses Synthetic Control to find the optimal weights for each state that closely resembles Massachusetts. We present these weights as well as our model prediction of lower mortality rates post 2006, when Romneycare was passed. Although Massachusetts did not trend similarly to other states chosen by Synthetic Control prior to the passage of Romneycare in 2006, our model predicts a decline in mortality rate of .867 which matches the actual outcome almost exactly. The results of our Synthetic Control estimates confirm the conclusion of Sommers, Long, and Baicker.
 \newpage
@@ -37,6 +38,47 @@ The results, published in the American College of Physicians' Annals of Internal
 # 3. Data
   To build the synthetic control, state-level annual time-series data was extracted from the Census Bureau covering the period between 2000 and 2010. Relevant data collected included gender balance; racial diversity split into White, Black, Asian, American Indian/Native, Hawaiian/Pacific Islander, and multiracial as percent of population; age cohorts as percent of population; unemployment rate; poverty rate; median household income; and uninsured rate as the percent of residents without health insurance coverage. We agreed with the original authors' choice to exclude elderly individuals who would be eligible for Medicare from the sample, as we would not expect a policy primarily aimed at increasing health insurance coverage to have a substantial effect on those eligible for Medicare.
   Exact replication of the original authors' data set was difficult as they were able to obtain county level data with specific causes of death via a direct request to the CDC. The data available publicly from the CDC does not have cause of death broken down as granularly as the authors', so replicating their measure of "Healthcare-Amenable" mortality accurately wasn't feasible, and would have been a rough approximation at best. Thus, we chose to focus on replicating their measure of "All-cause-mortality", which we could be found from census panel data.
+  
+  We present some tables of summary statistics below:
+
+
+```{r, results="asis",echo=FALSE,message=FALSE}
+df_sc <- read_csv(here("data", "sc_data.csv"),
+                  show_col_types = F) %>% 
+  select(Mort_rate, Unemp_Rate,Poverty_rate,Uninsured_pct)
+
+ns <- df_sc %>% summarise(across(everything(), ~sum(!is.na(.x))))
+means <- df_sc %>% summarise(across(everything(), ~mean(.x, na.rm=T))) %>% round(3)
+sds <- df_sc %>% summarise(across(everything(), ~sd(.x, na.rm=T))) %>% round(3)
+
+stats_sc <- list(ns, means, sds) %>% 
+  do.call("rbind", .) %>% 
+  t() %>%
+  as.data.frame %>% 
+  rownames_to_column()
+
+colnames(stats_sc) <- c("Variable",
+                        "N",
+                        "Mean", 
+                        "Standard Deviation")
+
+panel_sc <- stats_sc
+
+panel_sc %>%
+  mutate(Variable = str_replace_all(Variable, "_", " "),
+         Variable = str_to_title(Variable)) %>% 
+  kbl(
+    caption = "Main Variables Summary",
+    booktabs = T,
+    format = 'latex',
+    label = 'tab:replicatetable2a'
+  ) %>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+
+
+This table shows that between the years of our study, the mortality rate had a mean of 0.847%. Average unemployment was also about 5.5% among states in our sample. Finally, the mean poverty and uninsured rates were about 15% and 12%, respectively.
 
 # 4. Methodology
 Given that the implementation of "Romneycare", the Massachusetts Health Care Reform, was a unique policy event in the United States at the time, Synthetic Control seemed to be a very appropriate method for determining the policy's causal effect on mortality. It is very analogous to the original authors' propensity score matchin approach, but allowed us to use State-level data and make broader claims about Massachusetts in aggregate.

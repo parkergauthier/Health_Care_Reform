@@ -41,9 +41,9 @@ colnames(stats_ue) <- c("Variable",
                      "Standard Deviation")
 
 
-df_sc <- read_csv(here("data", "sc-data.csv"),
+df_sc <- read_csv(here("data", "sc_data.csv"),
                   show_col_types = F) %>% 
-  select("2000":"2010")
+  select(Mort_rate, Unemp_Rate,Poverty_rate,Uninsured_pct)
 
 ns <- df_sc %>% summarise(across(everything(), ~sum(!is.na(.x))))
 means <- df_sc %>% summarise(across(everything(), ~mean(.x, na.rm=T))) %>% round(3)
@@ -59,5 +59,45 @@ colnames(stats_sc) <- c("Variable",
                         "N",
                         "Mean", 
                         "Standard Deviation")
- 
+panel_ui <- stats_ui
 
+panel_ui %>%
+  mutate(Variable = str_replace_all(Variable, "_", " "),
+         Variable = str_to_title(Variable)) %>% 
+  kbl(
+    caption = "Main Variables Summary",
+    booktabs = T,
+    format = 'latex',
+    label = 'tab:replicatetable2a'
+  ) %>%
+  kable_styling(latex_options = "HOLD_position") %>%
+  write_lines(here("tables", "rep_table_ui.tex"))
+
+
+panel_ue <- stats_ue
+
+panel_ue %>%
+  mutate(Variable = str_replace_all(Variable, "_", " "),
+         Variable = str_to_title(Variable)) %>% 
+  kbl(
+    caption = "Main Variables Summary",
+    booktabs = T,
+    format = 'latex',
+    label = 'tab:replicatetable2a'
+  ) %>%
+  kable_styling(latex_options = "HOLD_position") %>%
+  write_lines(here("tables", "rep_table_ue.tex"))
+
+panel_sc <- stats_sc
+
+panel_sc %>%
+  mutate(Variable = str_replace_all(Variable, "_", " "),
+         Variable = str_to_title(Variable)) %>% 
+  kbl(
+    caption = "Main Variables Summary",
+    booktabs = T,
+    format = 'latex',
+    label = 'tab:replicatetable2a'
+  ) %>%
+  kable_styling(latex_options = "HOLD_position") %>%
+  write_lines(here("tables", "rep_table_sc.tex"))
