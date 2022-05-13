@@ -21,8 +21,6 @@ if (!("librarian" %in% rownames(utils::installed.packages()))) {
 librarian::shelf(tidyverse, haven, kableExtra, modelr, rsample, stargazer, tidysynth)
 ```
 
-
-
 # Abstract
 We utilize the panel dataset from Center for Disease Control (CDC) to investigate the effect of Romneycare on mortality rates. Our analysis uses Synthetic Control to find the optimal weights for each state that closely resembles Massachusetts. We present these weights as well as our model prediction of lower mortality rates post 2006, when Romneycare was passed. Although Massachusetts did not trend similarly to other states chosen by Synthetic Control prior to the passage of Romneycare in 2006, our model predicts a decline in mortality rate of .867 which matches the actual outcome almost exactly. The results of our Synthetic Control estimates confirm the conclusion of Sommers, Long, and Baicker.
 \newpage
