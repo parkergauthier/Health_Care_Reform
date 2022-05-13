@@ -12,12 +12,7 @@ header-includes:
 - \usepackage{tabu}
 
 ---
-```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
-options(scipen = 999)
-if (!("librarian" %in% rownames(utils::installed.packages()))) {
-  utils::install.packages("librarian")}
-librarian::shelf(tidyverse, haven, kableExtra, modelr, rsample, stargazer, tidysynth)
-```
+
 \newline
 \newline
 # Abstract
@@ -71,54 +66,38 @@ In words, the ATT can be calculated as the estimate of the difference in outcome
 
 There were some notable features that stood our when running our synthetic control model.  As displayed in Table 1, the model gave higher weights to states such as Rhode Island, Maryland and Connecticut.  These states were determined to have the most similar characteristics to Massachusetts, perhaps stemming from their geographical proximity to each other.  Using these weights, our model predicted higher mortality rates post 2005 as shown in Figure 1. This has some interesting implications for the efficacy of our model.  Our event of interest takes place in 2006, a year after this hike in mortality rates.  It would appear that Massachusetts is not following the same trends as states deemed most similar for this year.  Figure 1 displays this more explicitly, showing how these states kink upwards from 2004 to 2005 but Massachusetts remains on a downward trend.  Despite this, mortality rates in Massachusetts appear to be declining at a greater rate than our control in 2006.  Furthermore, it is declining at a greater rate than the previous year as highlighted in Figure 3.  Despite the fluctuations in trends prior the event, our synthetic control model did predict that mortality rates would decline post 2006. The control model's mortality rate was approximately .867 in 2006 while the actual outcome came out to be approximately .833.  Therefore our ATT shows a decline of .034 deaths per 100,000.  
 
-```{r table1, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-#create a table of weights descending
-#load
-load(file = "r_objects/sc_out.Rdata")
-#clean
-sc_out = sc_out$.unit_weights %>% data.frame
-state_weights = sc_out[,1:2]
-colnames(state_weights) = c("State", "Weight")
-state_weights = state_weights %>% arrange(desc(Weight)) %>% head(10)
-#knit
-knitr::kable(state_weights, format = "latex" , digits = 5, booktabs = TRUE, caption = "Synthetic Control: Weights of sampled states") %>% kable_classic(full_width = T, html_font = "Cambria") %>% kable_styling(latex_options = 'hold_position')
-```
+\begin{table}[!h]
 
-```{r figure1, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-#load sc data
-load(file = "r_objects/sc_out.Rdata")
-#plot data
-sc_out %>% plot_trends() +
-  labs(title = "Figure 1 - Time Series of the Sythetic and Observed Mortality Rate", y = "Mortality Rate")
-```
+\caption{\label{tab:table1}Synthetic Control: Weights of sampled states}
+\centering
+\begin{tabu} to \linewidth {>{\raggedright}X>{\raggedleft}X}
+\toprule
+State & Weight\\
+\midrule
+Rhode Island & 0.27630\\
+Maryland & 0.27614\\
+Connecticut & 0.23565\\
+District of Columbia & 0.11152\\
+Minnesota & 0.09388\\
+\addlinespace
+Hawaii & 0.00415\\
+New Hampshire & 0.00229\\
+Virginia & 0.00001\\
+Delaware & 0.00001\\
+New Jersey & 0.00000\\
+\bottomrule
+\end{tabu}
+\end{table}
 
-```{r figure2, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-sc_data = read.csv("data/sc_data.csv") %>% select(-X, -crudemort_rate)
-sc_tbl = sc_data %>% as_tibble()
+![](report_files/figure-latex/figure1-1.pdf)<!-- --> 
 
-sc_tbl %>%  
-  filter(State == "Massachusetts" | State == "Rhode Island" | State == "Maryland" | State == "Connecticut" | State == "District of Columbia",Year == 2003 | Year == 2004 | Year == 2005) %>% 
-  ggplot(aes(y = Mort_rate, x = Year, color = factor(State))) +
-  geom_line(aes(size = factor(State))) + 
-  scale_size_manual(values = c(.5,.5,.5,2,.5))+
-  labs(y = "Mortality Rate", title = "Figure 2 - Mortality Rate Trends for Heavily Weighted States (2003-2005)", color = "State", size = "State")
+![](report_files/figure-latex/figure2-1.pdf)<!-- --> 
 
-```
-
-```{r figure3, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-#load sc data
-load(file = "r_objects/sc_out.Rdata")
-#plot data
-sc_out %>% plot_trends(time_window = 2005:2007) +
-  labs(title = "Figure 3 - Synthetic and Observed Mortality Rate at Event", y = "Mortality Rate")
-```
+![](report_files/figure-latex/figure3-1.pdf)<!-- --> 
 
 
 
-```{r table2g, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
-load(file = "r_objects/sc_out.Rdata")
-sc_out %>% plot_differences()
-```
+![](report_files/figure-latex/table2g-1.pdf)<!-- --> 
 
 # 6. Conclusion
 Low income households are experiencing subpar quality of healthcare as well as the barriers to healthcare access as compared to their higher income counterparts. It is a pressing issue that demands a carefully crafted healthcare policy that can effectively promote better life quality. The passage of Romneycare in 2006 in Massachusetts allows us to estimate the effect of such health policy on mortality rates. States such as Rhode Island, Maryland and Connecticut, are chosen with higher weights to represent Massachusetts in the counterfactual world where it was not treated. Our analysis reveals a significant decline in mortality rates among nonelderly adults in Massachusetts. Although our results only define average treatment on the treated, as opposed to the average treatment effect for the entire population, since Massachusetts differs from other states in many aspects such as its geography or demography. Our research serves as a starting point for further analysis on the treatment effects of healthcare policies.

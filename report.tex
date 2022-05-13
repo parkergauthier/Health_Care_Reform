@@ -6,8 +6,8 @@
 ]{article}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{iftex}
-\ifPDFTeX
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -63,7 +63,7 @@
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabu}
-\ifLuaTeX
+\ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 
@@ -185,6 +185,29 @@ granularly as the authors', so replicating their measure of
 have been a rough approximation at best. Thus, we chose to focus on
 replicating their measure of ``All-cause-mortality'', which we could be
 found from census panel data.
+
+We present some tables of summary statistics below:
+
+\begin{table}[H]
+
+\caption{\label{tab:tab:replicatetable2a}Main Variables Summary}
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+Variable & N & Mean & Standard Deviation\\
+\midrule
+Mort Rate & 561 & 0.847 & 0.125\\
+Unemp Rate & 561 & 5.543 & 1.979\\
+Poverty Rate & 561 & 12.207 & 3.270\\
+Uninsured Pct & 561 & 15.086 & 4.334\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This table shows that between the years of our study, the mortality rate
+had a mean of 0.847\%. Average unemployment was also about 5.5\% among
+states in our sample. Finally, the mean poverty and uninsured rates were
+about 15\% and 12\%, respectively.
 
 \hypertarget{methodology}{%
 \section{4. Methodology}\label{methodology}}
